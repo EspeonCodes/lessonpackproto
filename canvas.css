@@ -1,0 +1,46 @@
+:root {
+ background-color: slategray;
+ font-family: monospace;
+ font-size: 10px;
+}
+
+body {
+ display: flex;
+ flex-direction: column;
+ justify-content: space-between;
+ height: 95vh;
+}
+
+header, footer {
+ background-color:whitesmoke;
+ width: 100vw;
+ height:20px;
+ font-size: 1.5rem;
+ display: flex;
+ justify-content: center;
+ color: darkslategray;
+ box-shadow: 2px 2px 2ch darkslateblue;
+}
+
+main {
+ flex: 1;
+ margin: 50px 40px;
+ display: flex;
+ box-shadow: 2px 2px 2ch darkslateblue;
+}
+
+.gamebox {
+ background-color: whitesmoke;
+ flex: 5;
+}
+
+.sidebar {
+ flex:1;
+ display: flex;
+ flex-direction: column;
+}
+
+#ball {
+width:70px;
+transition: transform 0.05s 0s;
+}

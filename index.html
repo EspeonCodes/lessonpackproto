@@ -1,59 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lesson Pack Prototype</title>
-    <link rel="stylesheet" href="./style.css">
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Document</title>
+ <link rel="stylesheet" href="./canvas.css">
 </head>
 <body>
-    <div class="header">
-        <div class="leftBox">
-            LESSON PACK PROTOTYPE
-        </div>
-        <div class="rightBox" id="chapter">
-            subject x, chapter x
-        </div>
-    </div>
+ <header class="title">Working Prototype</header>
+ <main>
+  <div class="gamebox">
+   <img id='ball' src="./8-Ball-Pool-PNG-Photos-2401399322.png" alt="8-bal">
+  </div>
+  <div class="sidebar">
+   <button class="play">PLAY</button>
+   <button class="stop">STOP</button>
 
-    <div class="main">
-        <div class="box sidebar">
-            <div class="title">
-                LESSON CONTENTS
-            </div>
-            <ul class="contents">
-                <li class="lesson-entity"><a>Engage</a></li>
-                <li class="lesson-entity"><a>Explore</a></li>
-                <li class="lesson-entity"><a>Explain</a></li>
-                <li class="lesson-entity"><a>Elaborate</a></li>
-                <li class="lesson-entity"><a>Evaluate</a></li>
-            </ul>
-        </div>
-        <div class="box main-content">
-            <div class=maintitle>
-                EXAMPLE: THE HARMONIC OSCILLATOR
-            </div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo debitis neque doloremque soluta et similique quod magni, hic, molestias, deserunt dolore distinctio quis? Nam accusantium eaque, autem reiciendis et consequuntur?
-        </div>
-        <div class="box corner">
-            <div class="title">
-                CURIOSITY CORNER
-            </div>
-            <ul>
-                <li>What is the Harmonic Oscllator?</li>
-                <li>What equation describes the Harmonic Oscilator?</li>
-                <li>Is energy preserved in a Harmonic Oscillator</li>
-            </ul>
-        </div>
+   <div class="slider">
+    <div class="sliderTitle">MANAGE HEIGHT</div>
+    <div class="sliderInterface">
+     <button class="control reduceHeight">-</button>
+     <div class="display displayHeight">X</div>
+     <button class="control increaseHeight">+</button>
     </div>
+   </div>
 
-    <div class="footer">
-        <div class="leftBox">
-            ABOUT
-        </div>
-        <div class="rightBox">
-            Made by Espeon, 2026
-        </div>
+   <div class="slider">
+    <div class="sliderTitle">MANAGE VELOCITY</div>
+    <div class="sliderInterface">
+     <button class="control reduceVelocity">-</button>
+     <div class="display displayVelocity">X</div>
+     <button class="control increaseVelocity">+</button>
     </div>
+   </div>
+   
+  </div>
+ </main>
+ <footer>by Espeon, 2026</footer>
+
+ <script src="./canvasScript.js"></script>
 </body>
 </html>

@@ -41,6 +41,44 @@ main {
 }
 
 #ball {
-width:70px;
-transition: transform 0.05s 0s;
+width: 50px;
+}
+
+.slider {
+ display: flex;
+ flex-direction: column;
+}
+
+.sliderInterface {
+ display: flex;
+}
+
+button {
+  display: flex;
+ justify-content: center;
+ align-items: center;
+ background-color: slategrey;
+ border: solid 1px whitesmoke;
+ color: whitesmoke;
+ font-weight: 0;
+ font-size: 1.5 rem;
+ padding: 2px;
+}
+
+.control, .display {
+ flex: 1;
+}
+
+.sliderTitle, .display {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ padding: 5px;
+ color: whitesmoke;
+ font-weight: 600;
+ font-size: 1.5rem;
+}
+
+button {
+ background-color: slategray;
 }

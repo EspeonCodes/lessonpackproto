@@ -65,8 +65,11 @@ button {
  padding: 2px;
 }
 
-.control, .display {
+.control {
  flex: 1;
+}
+.display {
+ flex: 2;
 }
 
 .sliderTitle, .display {

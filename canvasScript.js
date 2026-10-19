@@ -5,9 +5,8 @@ const display = {
 
  heightDisplay: document.querySelector('.displayHeight'),
  velocityDisplay: document.querySelector('.displayVelocity'),
-
- testSlider: document.querySelector('.testSlider'),
- testDisplay: document.querySelector('.test'),
+ heightSlider: document.querySelector('.heightSlider'),
+ velocitySlider: document.querySelector('.velocitySlider'),
 
  playButton: document.querySelector('.play'),
  pauseButton: document.querySelector('.pause'),
@@ -22,31 +21,53 @@ const display = {
 const plat = {
  sim: false, //Is the simulation active or not?
  scale: 10, //used to convert pixels to meters.
- vel: 50, //how fast will the object move horizontally? [pixels/second]
+ vel: display.velocitySlider.getAttribute('value'), //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 50, //the base unit of time for the simulation, [milliseconds]
  grav: 10, //how strong is the object's vertical acceleration? [pixels/second^2]
- fromTop: 0, //how far is the ball from the top of the gamebox? [pixels]
+ fromTop: display.gamebox.offsetHeight-display.ball.offsetHeight, //how far is the ball from the top of the gamebox? [pixels]
  tempo: 5, //how much faster is the simulation compared to real time?
- 
- height: function() {return display.gamebox.offsetHeight-this.fromTop-display.ball.offsetHeight;}, //how high-up does the object start? [pixels]
+ height: display.heightSlider.getAttribute('value'), //how high-up does the object start? [pixels]
+
  positionX: function() {return this.vel*this.time},
- positionY: function() {return this.fromTop+0.5*this.grav*this.time*this.time},
+ positionY: function() {
+  if (this.fromTop-this.height+0.5*this.grav*this.time*this.time<this.fromTop) {
+   return this.fromTop-this.height+0.5*this.grav*this.time*this.time
+  } else {
+   this.sim = false;
+   return this.fromTop;
+  }
+ },
 };
 
 const func = {
  pix: function(num) {return '('+num+'px)';}, //turns numbers to pixel values
- showHeight: function() {display.heightDisplay.textContent=plat.height()/plat.scale+' m'},
+ showHeight: function() {display.heightDisplay.textContent=plat.height/plat.scale+' m'},
  showSpeed: function() {display.velocityDisplay.textContent=plat.vel/plat.scale+' m/s'},
 }
 
 console.log(plat.vel);
-console.log(plat.height());
+console.log(plat.height);
+display.heightSlider.setAttribute('max', plat.fromTop);
 func.showHeight();
 func.showSpeed();
 
+
+display.velocitySlider.oninput =() => {
+ plat.vel = display.velocitySlider.value;
+ func.showSpeed();
+}
+display.heightSlider.oninput =() => {
+ plat.height = display.heightSlider.value;
+ func.showHeight();
+}
+
 const gameClock = setInterval (
  ()=> {
+  if(plat.height=0){
+   plat.sim = false;
+   console.log('blank tick');
+  }
   if(plat.sim){
    display.ball.style.transform='translateX'+func.pix(plat.positionX())+'\
                                  translateY'+func.pix(plat.positionY());
@@ -77,42 +98,5 @@ display.mainbox.addEventListener ('click', (event)=>{
   plat.sim = false;
   plat.time =0;
  }
- 
- //increase height
- else if (event.target=== display.heightPlus){
-  plat.sim = false;
-  plat.time =0;
-  if (plat.fromTop>5) {plat.fromTop -=10} else {plat.fromTop=0};
-  func.showHeight();
- }
- 
- //decrease height
- else if (event.target === display.heightMinus) {
-  plat.time =0;
-  plat.sim = false;
-  if (plat.fromTop<display.mainbox.offsetHeight-display.ball.offsetHeight-10) {plat.fromTop +=10} else {plat.fromTop=display.mainbox.offsetHeight-display.ball.offsetHeight-10};
-  console.log(plat.fromTop);
-  func.showHeight();
- }
- 
- //increase velocity
- else if (event.target=== display.speedPlus){
-  plat.time =0;
-  plat.sim = false;
-  plat.vel +=10;
-  func.showSpeed();
- }
- 
- //reduce velocity
- else if (event.target === display.speedMinus) {
-  plat.time =0;
-  plat.sim = false;
-  plat.vel -=10;
-  func.showSpeed();
- }
 }
 )
-
-display.testSlider.oninput =() => {
-  display.testDisplay.textContent=display.testSlider.value;
-}

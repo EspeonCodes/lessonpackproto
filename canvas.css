@@ -31,22 +31,37 @@ main {
 
 .gamebox {
  background-color: whitesmoke;
- flex: 5;
+ flex: 4;
+}
+
+.controls {
+ display: flex;
+}
+
+.control {
+ flex: 1;
 }
 
 .sidebar {
  flex:1;
  display: flex;
  flex-direction: column;
+ gap: 10px;
 }
 
 #ball {
 width: 50px;
 }
 
-.slider {
+.sliderContainer {
  display: flex;
  flex-direction: column;
+}
+
+.slider {
+ width: 95%;
+ padding: 5px 0px;
+ align-self: center;
 }
 
 .sliderInterface {
@@ -69,10 +84,10 @@ button {
  flex: 1;
 }
 .display {
- flex: 2;
+ flex: 1;
 }
 
-.sliderTitle, .display {
+.title, .display {
  display: flex;
  justify-content: center;
  align-items: center;

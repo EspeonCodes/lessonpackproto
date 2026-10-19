@@ -7,17 +7,20 @@
  <link rel="stylesheet" href="./canvas.css">
 </head>
 <body>
- <header class="title">Working Prototype</header>
+ <header class="supertitle">Working Prototype</header>
  <main>
   <div class="gamebox">
    <img id='ball' src="./8-Ball-Pool-PNG-Photos-2401399322.png" alt="8-bal">
   </div>
   <div class="sidebar">
-   <button class="play">PLAY</button>
-   <button class="stop">STOP</button>
+   <div class="controls">
+    <button class="control play">PLAY</button>
+    <button class="control pause">PAUSE</button>
+    <button class="control stop">STOP</button>
+   </div>
 
-   <div class="slider">
-    <div class="sliderTitle">MANAGE HEIGHT</div>
+   <div class="sliderContainer">
+    <div class="title">MANAGE HEIGHT</div>
     <div class="sliderInterface">
      <button class="control reduceHeight">-</button>
      <div class="display displayHeight">X</div>
@@ -25,8 +28,8 @@
     </div>
    </div>
 
-   <div class="slider">
-    <div class="sliderTitle">MANAGE VELOCITY</div>
+   <div class="sliderContainer">
+    <div class="title">MANAGE VELOCITY</div>
     <div class="sliderInterface">
      <button class="control reduceVelocity">-</button>
      <div class="display displayVelocity">X</div>
@@ -34,6 +37,10 @@
     </div>
    </div>
    
+   <div class="sliderContainer">
+    <input type="range" class="testSlider"></input>
+    <div class="display test">X</div>
+   </div>
   </div>
  </main>
  <footer>by Espeon, 2026</footer>

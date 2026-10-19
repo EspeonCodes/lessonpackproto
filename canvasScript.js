@@ -1,11 +1,18 @@
 const display = {
  gamebox:document.querySelector('.gamebox'),
  ball: document.getElementById('ball'),
+ mainbox: document.querySelector('main'),
+
  heightDisplay: document.querySelector('.displayHeight'),
  velocityDisplay: document.querySelector('.displayVelocity'),
+
+ testSlider: document.querySelector('.testSlider'),
+ testDisplay: document.querySelector('.test'),
+
  playButton: document.querySelector('.play'),
+ pauseButton: document.querySelector('.pause'),
  stopButton: document.querySelector('.stop'),
- mainbox: document.querySelector('main'),
+
  heightPlus: document.querySelector('.increaseHeight'),
  heightMinus: document.querySelector('.reduceHeight'),
  speedPlus: document.querySelector('.increaseVelocity'),
@@ -19,7 +26,7 @@ const plat = {
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 50, //the base unit of time for the simulation, [milliseconds]
  grav: 10, //how strong is the object's vertical acceleration? [pixels/second^2]
- fromTop:0, //how far is the ball from the top of the gamebox? [pixels]
+ fromTop: 0, //how far is the ball from the top of the gamebox? [pixels]
  tempo: 5, //how much faster is the simulation compared to real time?
  
  height: function() {return display.gamebox.offsetHeight-this.fromTop-display.ball.offsetHeight;}, //how high-up does the object start? [pixels]
@@ -46,7 +53,8 @@ const gameClock = setInterval (
    plat.time +=plat.timeUnit/1000;
    console.log('tick');
   } else {
-   display.ball.style.transform='translateY'+func.pix(plat.positionY());
+   display.ball.style.transform='translateX'+func.pix(plat.positionX())+'\
+                                 translateY'+func.pix(plat.positionY());
    console.log('blank tick');
   }
  }
@@ -57,14 +65,19 @@ display.mainbox.addEventListener ('click', (event)=>{
  //play
  if (event.target===display.playButton){
   plat.sim = true;
-  console.log(plat.sim);
-  plat.time = 0;
  }
+ 
+ //pause 
+ else if (event.target === display.pauseButton) {
+  plat.sim = false;
+ }
+
  //stop
  else if (event.target === display.stopButton) {
   plat.sim = false;
   plat.time =0;
  }
+ 
  //increase height
  else if (event.target=== display.heightPlus){
   plat.sim = false;
@@ -72,6 +85,7 @@ display.mainbox.addEventListener ('click', (event)=>{
   if (plat.fromTop>5) {plat.fromTop -=10} else {plat.fromTop=0};
   func.showHeight();
  }
+ 
  //decrease height
  else if (event.target === display.heightMinus) {
   plat.time =0;
@@ -80,13 +94,15 @@ display.mainbox.addEventListener ('click', (event)=>{
   console.log(plat.fromTop);
   func.showHeight();
  }
-//increase velocity
+ 
+ //increase velocity
  else if (event.target=== display.speedPlus){
   plat.time =0;
   plat.sim = false;
   plat.vel +=10;
   func.showSpeed();
  }
+ 
  //reduce velocity
  else if (event.target === display.speedMinus) {
   plat.time =0;
@@ -96,3 +112,7 @@ display.mainbox.addEventListener ('click', (event)=>{
  }
 }
 )
+
+display.testSlider.oninput =() => {
+  display.testDisplay.textContent=display.testSlider.value;
+}

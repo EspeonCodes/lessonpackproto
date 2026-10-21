@@ -20,7 +20,7 @@ const display = {
 
 const plat = {
  sim: false, //Is the simulation active or not?
- scale: 20, //used to convert pixels to meters.
+ scale: 40, //used to convert pixels to meters.
  vel: display.velocitySlider.getAttribute('value'), //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 50, //the base unit of time for the simulation, [milliseconds]
@@ -29,7 +29,14 @@ const plat = {
  tempo: 5, //how much faster is the simulation compared to real time?
  height: display.heightSlider.getAttribute('value'), //how high-up does the object start? [pixels]
 
- positionX: function() {return this.vel*this.time},
+ positionX: function() {
+  if (this.time*this.vel<display.canvas.getAttribute('width')-2*this.scale) {
+   return this.time*this.vel;
+  } else {
+   this.sim = false;
+   return display.canvas.getAttribute('width')-2*this.scale;
+  }
+ },
  positionY: function() {
   if (this.fromTop()-this.height+0.5*this.grav*this.time*this.time<this.fromTop()) {
    return this.fromTop()-this.height+0.5*this.grav*this.time*this.time
@@ -81,7 +88,7 @@ const render = {
   this.pen.strokeStyle = 'darkslategray';
   this.pen.fillStyle = 'slategray';
   this.pen.beginPath();
-  this.pen.arc(plat.positionX()+plat.scale, plat.positionY(), 5, 0, 2*Math.PI);
+  this.pen.arc(plat.positionX()+plat.scale, plat.positionY(), plat.scale/2, 0, 2*Math.PI);
   this.pen.fill();
   this.pen.stroke();
  },
@@ -96,21 +103,24 @@ const render = {
 
 const func = {
  pix: function(num) {return '('+num+'px)';}, //turns numbers to pixel values
- showHeight: function() {display.heightDisplay.textContent=plat.height/plat.scale+' m'},
- showSpeed: function() {display.velocityDisplay.textContent=plat.vel/plat.scale+' m/s'},
+ showHeight: function() {display.heightDisplay.textContent=(plat.height/plat.scale).toFixed(1)+' m'},
+ showSpeed: function() {display.velocityDisplay.textContent=(plat.vel/plat.scale).toFixed(1)+' m/s'},
 }
 
-display.heightSlider.setAttribute('max', plat.fromTop);
 func.showHeight();
 func.showSpeed();
 
 display.velocitySlider.oninput =() => {
  plat.vel = display.velocitySlider.value;
  func.showSpeed();
+ plat.sim = false;
+ plat.time =0;
 }
 display.heightSlider.oninput =() => {
- plat.height = display.heightSlider.value;
+ plat.height = ((plat.fromTop()-plat.scale)/100)*display.heightSlider.value;
  func.showHeight();
+ plat.sim = false;
+ plat.time =0;
 }
 
 const gameClock = setInterval (
@@ -125,7 +135,6 @@ const gameClock = setInterval (
   }
  }
 ,plat.timeUnit/plat.tempo);
-
 
 display.mainbox.addEventListener ('click', (event)=>{
  //play

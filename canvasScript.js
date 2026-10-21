@@ -20,22 +20,22 @@ const display = {
 
 const plat = {
  sim: false, //Is the simulation active or not?
- scale: 10, //used to convert pixels to meters.
+ scale: 20, //used to convert pixels to meters.
  vel: display.velocitySlider.getAttribute('value'), //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 50, //the base unit of time for the simulation, [milliseconds]
  grav: 10, //how strong is the object's vertical acceleration? [pixels/second^2]
- fromTop: display.gamebox.offsetHeight, //how far is the ball from the top of the gamebox? [pixels]
+ fromTop: function () {return display.canvas.offsetHeight-this.scale}, //how far is the ball from the top of the gamebox? [pixels]
  tempo: 5, //how much faster is the simulation compared to real time?
  height: display.heightSlider.getAttribute('value'), //how high-up does the object start? [pixels]
 
  positionX: function() {return this.vel*this.time},
  positionY: function() {
-  if (this.fromTop-this.height+0.5*this.grav*this.time*this.time<this.fromTop) {
-   return this.fromTop-this.height+0.5*this.grav*this.time*this.time
+  if (this.fromTop()-this.height+0.5*this.grav*this.time*this.time<this.fromTop()) {
+   return this.fromTop()-this.height+0.5*this.grav*this.time*this.time
   } else {
    this.sim = false;
-   return this.fromTop;
+   return this.fromTop();
   }
  },
 };
@@ -55,7 +55,7 @@ const render = {
  frame: function () {
   this.pen.strokeStyle = 'slategray'
   this.pen.lineWidth =1
-  this.pen.strokeRect(5,5,display.canvas.getAttribute('width')-10,display.canvas.getAttribute('height')-10);
+  this.pen.strokeRect(plat.scale,plat.scale,display.canvas.getAttribute('width')-2*plat.scale,display.canvas.getAttribute('height')-2*plat.scale);
  },
 
  line: function (startX, startY, endX, endY) {
@@ -67,16 +67,31 @@ const render = {
 
  grid: function () {
   let repeat = 0;
+  let steps = Math.floor((display.canvas.getAttribute('width')-2*plat.scale)/plat.scale);
   //horizontal lines
-  for (let i=0; i<10; i++) {
-   this.line(5, 10+repeat, display.canvas.getAttribute('width')-5, 10+repeat);
-   repeat+=5;}
-  //vertical lines
-  repeat = 0;
-  for (let i=0; i<10; i++) {
-   this.line(10+repeat, 5, 10+repeat, display.canvas.getAttribute('height')-10);
-   repeat+=5;}
+  for (let i=0; i<steps; i++) {
+   //horizontal
+   this.line(plat.scale, 2*plat.scale+repeat, display.canvas.getAttribute('width')-plat.scale, 2*plat.scale+repeat);
+   //vertical
+   this.line(2*plat.scale+repeat, plat.scale, 2*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale);
+   repeat+=plat.scale;}
  },
+
+ ball: function () {
+  this.pen.strokeStyle = 'darkslategray';
+  this.pen.fillStyle = 'slategray';
+  this.pen.beginPath();
+  this.pen.arc(plat.positionX()+plat.scale, plat.positionY(), 5, 0, 2*Math.PI);
+  this.pen.fill();
+  this.pen.stroke();
+ },
+
+ singleFrame: function () {
+  this.prime('slategray', 1);
+  this.frame();
+  this.grid();
+  this.ball();
+ }
 }
 
 const func = {
@@ -89,10 +104,6 @@ display.heightSlider.setAttribute('max', plat.fromTop);
 func.showHeight();
 func.showSpeed();
 
-render.prime('slategray', 1);
-render.frame();
-render.grid();
-
 display.velocitySlider.oninput =() => {
  plat.vel = display.velocitySlider.value;
  func.showSpeed();
@@ -102,18 +113,18 @@ display.heightSlider.oninput =() => {
  func.showHeight();
 }
 
-/* const gameClock = setInterval (
+const gameClock = setInterval (
  ()=> {  
   if(plat.sim){
-    
+   render.singleFrame();
    plat.time +=plat.timeUnit/1000;
    console.log('tick');
   } else {
-    
+   render.singleFrame();
    console.log('blank tick');
   }
  }
-,plat.timeUnit/plat.tempo); */
+,plat.timeUnit/plat.tempo);
 
 
 display.mainbox.addEventListener ('click', (event)=>{

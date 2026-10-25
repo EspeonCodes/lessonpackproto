@@ -3,32 +3,65 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Document</title>
+ <title>Horizontal Projectile Motion Prototype</title>
  <link rel="stylesheet" href="./canvas.css">
 </head>
 <body>
- <header class="supertitle">Working Prototype</header>
+ <header class="supertitle">Horizontal Projectile Motion: Working Prototype</header>
  <main>
   <div class="gamebox">
    <canvas class="render" width="655" height="455"></canvas>
   </div>
   <div class="sidebar">
    <div class="controls">
-    <button class="control play">PLAY</button>
-    <button class="control pause">PAUSE</button>
-    <button class="control stop">RESET</button>
+    <div class="subcontrol">
+     <button class="control play">PLAY</button>
+     <button class="control slomo">SLO-MO</button>
+    </div>
+    <div class="subcontrol">
+     <button class="control back">BACK</button>
+     <button class="control forward">FORWARD</button>
+    </div>
+    <div class="subcontrol">
+     <button class="control pause">PAUSE</button>
+     <button class="control stop">RESET</button>
+    </div>
    </div>
 
    <div class="sliderContainer">
-    <div class="title">MANAGE HEIGHT</div>
+    <div class="sliderTitle">
+     <div class="title">HEIGHT</div>
+     <div class="display displayHeight">X</div>
+    </div>
     <input type="range" class="slider heightSlider" min="0" max="100" value="0"></input>
-    <div class="display displayHeight">X</div>
    </div>
 
     <div class="sliderContainer">
-    <div class="title">MANAGE VELOCITY</div>
-    <input type="range" class="slider velocitySlider" min="0" max="100" value="0"></input>
-    <div class="display displayVelocity">X</div>
+    <div class="sliderTitle">
+     <div class="title">VELOCITY</div>
+     <div class="display displayVelocity">X</div>
+    </div>
+    <input type="range" class="slider velocitySlider" min="0" max="500" value="0"></input>
+    </div>
+
+    <div class="statOmatic">
+     <div class="title">STAT-O-MATIC!</div>
+     <div class="sliderTitle">
+      <div class="subtitle">POSITION X:</div>
+      <div class="display positionX">0</div>
+     </div>
+     <div class="sliderTitle">
+      <div class="subtitle">POSITION Y:</div>
+      <div class="display positionY">0</div>
+     </div>
+     <div class="sliderTitle">
+      <div class="subtitle">VELOCITY X:</div>
+      <div class="display velX">0</div>
+     </div>
+     <div class="sliderTitle">
+      <div class="subtitle">VELOCITY Y:</div>
+      <div class="display velY">0</div>
+     </div>
     </div>
    </div>
   </div>

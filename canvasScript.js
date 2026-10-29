@@ -27,30 +27,32 @@ const display = {
 
 const plat = {
  sim: false, //Is the simulation active or not?
- scale: 20, //used to convert pixels to meters.
+ scale: 30, //used to convert pixels to meters.
  vel: display.velocitySlider.getAttribute('value'), //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 20, //the base unit of time for the simulation, [milliseconds]
  grav: 200, //how strong is the object's vertical acceleration? [pixels/second^2]
- fromTop: function () {return display.canvas.offsetHeight-this.scale}, //how far is the ball from the top of the gamebox? [pixels]
+ fromTop: display.canvas.offsetHeight, //how far is the ball from the top of the gamebox? [pixels]
  height: display.heightSlider.getAttribute('value'), //how high-up does the object start? [pixels]
 
  positionX: function() {
-  if (this.time*this.vel<display.canvas.getAttribute('width')-2*this.scale) {
-   return this.time*this.vel;
+  if (this.time*this.vel<display.canvas.getAttribute('width')-2.5*this.scale) {
+   return this.time*this.vel+1.5*this.scale;
   } else {
    this.sim = false;
-   return display.canvas.getAttribute('width')-2*this.scale;
+   return display.canvas.getAttribute('width')-0.5*this.scale;
   }
  },
+
  positionY: function() {
-  if (this.fromTop()-this.height+0.5*this.grav*this.time*this.time<this.fromTop()) {
-   return this.fromTop()-this.height+0.5*this.grav*this.time*this.time
+  if (this.fromTop-1.5*this.scale-this.height+0.5*this.grav*this.time*this.time<this.fromTop-1.5*this.scale) {
+   return this.fromTop-1.5*this.scale-this.height+0.5*this.grav*this.time*this.time
   } else {
    this.sim = false;
-   return this.fromTop();
+   return this.fromTop-1.5*this.scale;
   }
  },
+
  velY: function() {
   return this.grav*this.time;
  }
@@ -71,7 +73,7 @@ const render = {
  frame: function () {
   this.pen.strokeStyle = 'rgb(47 79 79 / 50%)';
   this.pen.lineWidth =1
-  this.pen.strokeRect(plat.scale,plat.scale,display.canvas.getAttribute('width')-2*plat.scale,display.canvas.getAttribute('height')-2*plat.scale);
+  this.pen.strokeRect(1.5*plat.scale,0.5*plat.scale,display.canvas.getAttribute('width')-2*plat.scale,display.canvas.getAttribute('height')-2*plat.scale);
   this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
  },
 
@@ -88,30 +90,41 @@ const render = {
   this.pen.fillStyle = 'slategray';
   let stepsX = Math.floor((display.canvas.getAttribute('width')-2*plat.scale)/plat.scale);
   let stepsY = Math.floor((display.canvas.getAttribute('height')-2*plat.scale)/plat.scale);
-  for (let i=0; i<stepsY; i++) {
-   this.line(plat.scale, display.canvas.getAttribute('height')-(i+2)*plat.scale, display.canvas.getAttribute('width')-plat.scale, display.canvas.getAttribute('height')-(i+2)*plat.scale);
-   repeat+=plat.scale}
-  repeat = 0;
-  for (let i=0; i<stepsX; i++) {
-   this.line(2*plat.scale+repeat, plat.scale, 2*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale);
-   repeat+=plat.scale;}
-  this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
+  this.pen.font = plat.scale/2+'px monospace'
 
+  this.pen.strokeText(0, plat.scale/2, display.canvas.getAttribute('height')-plat.scale);
+  this.pen.fillText(0, plat.scale/2, display.canvas.getAttribute('height')-plat.scale);
+  for (let i=0; i<stepsY; i++) {
+   this.line(1.5*plat.scale, display.canvas.getAttribute('height')-(i+2)*plat.scale, display.canvas.getAttribute('width')-0.5*plat.scale, display.canvas.getAttribute('height')-(i+2)*plat.scale);
+   this.pen.strokeText(i+1, plat.scale/2, display.canvas.getAttribute('height')-(i+2)*plat.scale-0.25*plat.scale);
+   this.pen.fillText(i+1, plat.scale/2, display.canvas.getAttribute('height')-(i+2)*plat.scale-0.25*plat.scale);
+   repeat+=plat.scale}
+  
+  repeat = 0;
+  this.pen.strokeText(0, 1.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
+  this.pen.fillText(0, 1.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
+  for (let i=0; i<stepsX; i++) {
+   this.line(2.5*plat.scale+repeat, 0.5*plat.scale, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-1.5*plat.scale);
+   this.pen.strokeText(i+1, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
+   this.pen.fillText(i+1, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
+   repeat+=plat.scale;}
+
+  this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
  },
 
  vector: function(startX, startY, endX, endY, label) {
   this.pen.strokeStyle = 'red';
   this.pen.fillStyle = 'red';
-  this.pen.lineWidth = 2;
+  this.pen.lineWidth = plat.scale/15;
   this.line(startX, startY, endX, endY)
   this.pen.beginPath();
-  this.pen.arc(endX, endY, plat.scale/5, 0, 2*Math.PI);
+  this.pen.arc(endX, endY, plat.scale/6.5, 0, 2*Math.PI);
   this.pen.fill();
 
   this.pen.lineWidth = 1;
-  this.pen.font = '18px monospace'
-  this.pen.strokeText(label, endX+plat.scale, endY+plat.scale);
-  this.pen.fillText(label, endX+plat.scale, endY+plat.scale);
+  this.pen.font = plat.scale/1.5+'px monospace'
+  this.pen.strokeText(label, endX+plat.scale/1.5, endY+plat.scale/1.5);
+  this.pen.fillText(label, endX+plat.scale/1.5, endY+plat.scale/1.5);
   this.pen.strokeStyle = 'slategray';
   this.pen.fillStyle = 'slategray';
  },
@@ -119,9 +132,9 @@ const render = {
  ball: function () {
   this.pen.strokeStyle = 'whitesmoke';
   this.pen.fillStyle = 'red';
-  this.pen.lineWidth = 3;
+  this.pen.lineWidth = plat.scale/10;
   this.pen.beginPath();
-  this.pen.arc(plat.positionX()+plat.scale, plat.positionY(), plat.scale/1.5, 0, 2*Math.PI);
+  this.pen.arc(plat.positionX(), plat.positionY(), plat.scale/1.75, 0, 2*Math.PI);
   this.pen.fill();
   this.pen.stroke();
   this.pen.strokeStyle = 'slategray';
@@ -134,15 +147,15 @@ const render = {
   this.frame();
   this.grid();
   if (plat.vel>10){
-  this.vector(plat.positionX()+plat.scale,plat.positionY(),plat.positionX()+plat.scale+plat.vel*0.5,plat.positionY(), 'Vx');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY(), 'Vx');
   }
   if (plat.time<10*plat.timeUnit/1000){
-  this.vector(plat.positionX()+plat.scale,plat.positionY(),plat.positionX()+plat.scale,plat.positionY()+plat.velY()*0.25,'');
-  this.vector(plat.positionX()+plat.scale,plat.positionY(),plat.positionX()+plat.scale+plat.vel*0.5,plat.positionY()+plat.velY()*0.25,'');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX(), plat.positionY()+plat.grav*plat.time*0.35,'');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY()+plat.grav*plat.time*0.35,'');
   }
   else {
-  this.vector(plat.positionX()+plat.scale,plat.positionY(),plat.positionX()+plat.scale,plat.positionY()+plat.velY()*0.25,'Vy');
-  this.vector(plat.positionX()+plat.scale,plat.positionY(),plat.positionX()+plat.scale+plat.vel*0.5,plat.positionY()+plat.velY()*0.25,'V');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX(), plat.positionY()+plat.grav*plat.time*0.35,'Vy');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY()+plat.grav*plat.time*0.35,'V');
   }
   this.ball();
  }
@@ -170,7 +183,7 @@ display.velocitySlider.oninput =() => {
  plat.time =0;
 }
 display.heightSlider.oninput =() => {
- plat.height = ((plat.fromTop()-plat.scale)/100)*display.heightSlider.value;
+ plat.height = ((plat.fromTop-2*plat.scale)/100)*display.heightSlider.value;
  func.showHeight();
  plat.sim = false;
  plat.time =0;

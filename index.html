@@ -7,20 +7,28 @@
  <link rel="stylesheet" href="./canvas.css">
 </head>
 <body>
+ <div class="shader hidden"></div>
  <header class="supertitle">Horizontal Projectile Motion: Working Prototype</header>
  <main>
+  <div class="box popup hidden">
+   <span> PLEASE ENTER <span class="request">VALUE</span> </span>
+   <input class="popinput" type="number" min="0" max="100" value="0">
+   <span> min: <span class="popmin"> </span>  max: <span class="popmax"></span></span></span>
+   <div class="buttonAligner"> <button class="submit"> SUBMIT</button> </div>
+  </div>
+
   <div class="mainbox">
-   <div class="assistant">
-    <div class="face"> ASSISTANT <br> FACE</div>
+   <div class="assistant box">
+    <div class="face box"> ASSISTANT <br> FACE</div>
     <div class="voice"> ASSISTANT DIALOGUE</div>
    </div>
   <div class="gamebox">
     <canvas class="render" width="655" height="455"></canvas>
   </div>
-  <div class="progression"> PROGRESSION BAR</div>
+  <div class="progression box"> PROGRESSION BAR</div>
   </div>
   
-  <div class="sidebar">
+  <div class="box sidebar">
 
    <div class="controls">
      <button class="control play">PLAY</button>

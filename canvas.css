@@ -81,6 +81,7 @@ main {
  gap: 5px;
  margin: 10px;
 }
+
 .control {
  background-color: lightslategray;
  flex: 1;

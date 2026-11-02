@@ -28,28 +28,30 @@ const display = {
 const plat = {
  sim: false, //Is the simulation active or not?
  scale: 30, //scale*2 pixels = 1 meter, used to convert pixels to meters.
- vel: display.velocitySlider.getAttribute('value'), //how fast will the object move horizontally? [pixels/second]
+ vel: 0, //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 20, //the base unit of time for the simulation, [milliseconds]
  grav: 10, //how strong is the object's vertical acceleration? [pixels/second^2]
- fromTop: display.canvas.offsetHeight, //how far is the ball from the top of the gamebox? [pixels]
- height: display.heightSlider.getAttribute('value'), //how high-up does the object start? [pixels]
+ height: 0, //how high-up does the object start? [pixels]
+
+ canvasX: function() {return display.canvas.getAttribute('width')},
+ canvasY: function() {return display.canvas.getAttribute('height')},
 
  positionX: function() {
-  if (this.time*this.vel<display.canvas.getAttribute('width')-2.5*this.scale) {
+  if (this.time*this.vel<this.canvasX()-2.5*this.scale) {
    return this.time*this.vel+1.5*this.scale;
   } else {
    this.sim = false;
-   return display.canvas.getAttribute('width')-0.5*this.scale;
+   return this.canvasY()-0.5*this.scale;
   }
  },
 
  positionY: function() {
-  if (this.fromTop-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time<this.fromTop-1.5*this.scale) {
-   return this.fromTop-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time
+  if (this.canvasY()-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time<this.canvasY()-1.5*this.scale) {
+   return this.canvasY()-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time
   } else {
    this.sim = false;
-   return this.fromTop-1.5*this.scale;
+   return this.canvasY()-1.5*this.scale;
   }
  },
 
@@ -62,7 +64,7 @@ const render = {
  pen:display.canvas.getContext('2d'),
  
  prime: function (color, width) {
-  this.pen.clearRect(0,0,display.canvas.getAttribute('width'), display.canvas.getAttribute('height'));
+  this.pen.clearRect(0,0,plat.canvasX(),plat.canvasY());
   this.pen.fillStyle = color;
   this.pen.strokestyle = color;
   this.pen.lineWidth = width; 
@@ -73,7 +75,7 @@ const render = {
  frame: function () {
   this.pen.strokeStyle = 'rgb(47 79 79 / 50%)';
   this.pen.lineWidth =1
-  this.pen.strokeRect(1.5*plat.scale,0.5*plat.scale,display.canvas.getAttribute('width')-2*plat.scale,display.canvas.getAttribute('height')-2*plat.scale);
+  this.pen.strokeRect(1.5*plat.scale,0.5*plat.scale,plat.canvasX()-2*plat.scale,plat.canvasY()-2*plat.scale);
   this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
  },
 
@@ -88,23 +90,23 @@ const render = {
   let repeat = 0;
   this.pen.strokeStyle = 'rgb(47 79 79 / 50%)';
   this.pen.fillStyle = 'rgb(47 79 79 / 50%)';
-  let stepsX = Math.floor((display.canvas.getAttribute('width')-2*plat.scale)/plat.scale);
-  let stepsY = Math.floor((display.canvas.getAttribute('height')-2*plat.scale)/plat.scale);
+  let stepsX = Math.floor((plat.canvasX()-2*plat.scale)/plat.scale);
+  let stepsY = Math.floor((plat.canvasY()-2*plat.scale)/plat.scale);
   this.pen.font = plat.scale/2+'px monospace'
 
-  this.pen.fillText(0, plat.scale/1.5, display.canvas.getAttribute('height')-plat.scale);
+  this.pen.fillText(0, plat.scale/1.5, plat.canvasY()-plat.scale);
   for (let i=0; i<stepsY; i++) {
-   this.line(1.5*plat.scale, display.canvas.getAttribute('height')-(i+2.5)*plat.scale, display.canvas.getAttribute('width')-0.5*plat.scale, display.canvas.getAttribute('height')-(i+2.5)*plat.scale);
+   this.line(1.5*plat.scale, plat.canvasY()-(i+2.5)*plat.scale, plat.canvasX()-0.5*plat.scale, plat.canvasY()-(i+2.5)*plat.scale);
    if (i%2===1){   
-   this.pen.fillText(i/2+0.5, plat.scale/1.5, display.canvas.getAttribute('height')-(i+2.35)*plat.scale);}
+   this.pen.fillText(i/2+0.5, plat.scale/1.5, plat.canvasY()-(i+2.35)*plat.scale);}
    repeat+=plat.scale}
   
   repeat = 0;
-  this.pen.fillText(0, 1.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
+  this.pen.fillText(0, 1.5*plat.scale+repeat, plat.canvasX()-plat.scale/2);
   for (let i=0; i<stepsX; i++) {
-   this.line(2.5*plat.scale+repeat, 0.5*plat.scale, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-1.5*plat.scale);
+   this.line(2.5*plat.scale+repeat, 0.5*plat.scale, 2.5*plat.scale+repeat, plat.canvasY()-1.5*plat.scale);
    if (i%2===1){
-   this.pen.fillText(i/2+0.5, 2.4*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);}
+   this.pen.fillText(i/2+0.5, 2.4*plat.scale+repeat, plat.canvasY()-plat.scale/2);}
    repeat+=plat.scale;}
 
   this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
@@ -165,7 +167,7 @@ const func = {
  showSpeed: function() {display.velocityDisplay.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+' m/s'},
  updateStats: function() {
   display.statX.textContent=((plat.positionX()-1.5*plat.scale)/(2*plat.scale)).toFixed(1)+'m'
-  display.statY.textContent=(-1*((plat.positionY()-plat.fromTop+1.5*plat.scale))/(2*plat.scale)).toFixed(1)+'m'
+  display.statY.textContent=(-1*((plat.positionY()-plat.canvasY()+1.5*plat.scale))/(2*plat.scale)).toFixed(1)+'m'
   display.statVX.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+'m/s'
   display.statVY.textContent=(plat.velY()/(2*plat.scale)).toFixed(1)+'m/s'
  },
@@ -182,7 +184,7 @@ display.velocitySlider.oninput =() => {
  plat.time =0;
 }
 display.heightSlider.oninput =() => {
- plat.height = ((plat.fromTop-2*plat.scale)/100)*display.heightSlider.value;
+ plat.height = ((plat.canvasY()-2*plat.scale)/100)*display.heightSlider.value;
  func.showHeight();
  func.updateStats();
  plat.sim = false;

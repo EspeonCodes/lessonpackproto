@@ -9,39 +9,37 @@
 <body>
  <header class="supertitle">Horizontal Projectile Motion: Working Prototype</header>
  <main>
+  <div class="mainbox">
+   <div class="assistant">
+    <div class="face"> ASSISTANT <br> FACE</div>
+    <div class="voice"> ASSISTANT DIALOGUE</div>
+   </div>
   <div class="gamebox">
-   <canvas class="render" width="655" height="455"></canvas>
+    <canvas class="render" width="655" height="455"></canvas>
   </div>
+  <div class="progression"> PROGRESSION BAR</div>
+  </div>
+  
   <div class="sidebar">
+
    <div class="controls">
-    <div class="subcontrol">
-     <button class="control play">PLAY</button>
+    <button class="control play"> PLAY</button>
      <button class="control slomo">SLO-MO</button>
-    </div>
-    <div class="subcontrol">
      <button class="control back">BACK</button>
-     <button class="control forward">FORWARD</button>
-    </div>
-    <div class="subcontrol">
-     <button class="control pause">PAUSE</button>
+     <button class="control forward">STEP</button>
      <button class="control stop">RESET</button>
-    </div>
    </div>
 
-   <div class="sliderContainer">
-    <div class="sliderTitle">
+   <div class="sliderTitle">
      <div class="title">HEIGHT</div>
+     <input type="range" class="slider heightSlider" min="0" max="100" value="0"></input>
      <div class="display displayHeight">X</div>
-    </div>
-    <input type="range" class="slider heightSlider" min="0" max="100" value="0"></input>
    </div>
 
-    <div class="sliderContainer">
     <div class="sliderTitle">
      <div class="title">VELOCITY</div>
+     <input type="range" class="slider velocitySlider" min="0" max="500" value="0"></input>
      <div class="display displayVelocity">X</div>
-    </div>
-    <input type="range" class="slider velocitySlider" min="0" max="500" value="0"></input>
     </div>
 
     <div class="statOmatic">

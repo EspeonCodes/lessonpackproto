@@ -27,11 +27,11 @@ const display = {
 
 const plat = {
  sim: false, //Is the simulation active or not?
- scale: 30, //used to convert pixels to meters.
+ scale: 30, //scale*2 pixels = 1 meter, used to convert pixels to meters.
  vel: display.velocitySlider.getAttribute('value'), //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 20, //the base unit of time for the simulation, [milliseconds]
- grav: 200, //how strong is the object's vertical acceleration? [pixels/second^2]
+ grav: 10, //how strong is the object's vertical acceleration? [pixels/second^2]
  fromTop: display.canvas.offsetHeight, //how far is the ball from the top of the gamebox? [pixels]
  height: display.heightSlider.getAttribute('value'), //how high-up does the object start? [pixels]
 
@@ -45,8 +45,8 @@ const plat = {
  },
 
  positionY: function() {
-  if (this.fromTop-1.5*this.scale-this.height+0.5*this.grav*this.time*this.time<this.fromTop-1.5*this.scale) {
-   return this.fromTop-1.5*this.scale-this.height+0.5*this.grav*this.time*this.time
+  if (this.fromTop-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time<this.fromTop-1.5*this.scale) {
+   return this.fromTop-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time
   } else {
    this.sim = false;
    return this.fromTop-1.5*this.scale;
@@ -87,26 +87,24 @@ const render = {
  grid: function () {
   let repeat = 0;
   this.pen.strokeStyle = 'rgb(47 79 79 / 50%)';
-  this.pen.fillStyle = 'slategray';
+  this.pen.fillStyle = 'rgb(47 79 79 / 50%)';
   let stepsX = Math.floor((display.canvas.getAttribute('width')-2*plat.scale)/plat.scale);
   let stepsY = Math.floor((display.canvas.getAttribute('height')-2*plat.scale)/plat.scale);
   this.pen.font = plat.scale/2+'px monospace'
 
-  this.pen.strokeText(0, plat.scale/2, display.canvas.getAttribute('height')-plat.scale);
-  this.pen.fillText(0, plat.scale/2, display.canvas.getAttribute('height')-plat.scale);
+  this.pen.fillText(0, plat.scale/1.5, display.canvas.getAttribute('height')-plat.scale);
   for (let i=0; i<stepsY; i++) {
-   this.line(1.5*plat.scale, display.canvas.getAttribute('height')-(i+2)*plat.scale, display.canvas.getAttribute('width')-0.5*plat.scale, display.canvas.getAttribute('height')-(i+2)*plat.scale);
-   this.pen.strokeText(i+1, plat.scale/2, display.canvas.getAttribute('height')-(i+2)*plat.scale-0.25*plat.scale);
-   this.pen.fillText(i+1, plat.scale/2, display.canvas.getAttribute('height')-(i+2)*plat.scale-0.25*plat.scale);
+   this.line(1.5*plat.scale, display.canvas.getAttribute('height')-(i+2.5)*plat.scale, display.canvas.getAttribute('width')-0.5*plat.scale, display.canvas.getAttribute('height')-(i+2.5)*plat.scale);
+   if (i%2===1){   
+   this.pen.fillText(i/2+0.5, plat.scale/1.5, display.canvas.getAttribute('height')-(i+2.35)*plat.scale);}
    repeat+=plat.scale}
   
   repeat = 0;
-  this.pen.strokeText(0, 1.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
   this.pen.fillText(0, 1.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
   for (let i=0; i<stepsX; i++) {
    this.line(2.5*plat.scale+repeat, 0.5*plat.scale, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-1.5*plat.scale);
-   this.pen.strokeText(i+1, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
-   this.pen.fillText(i+1, 2.5*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);
+   if (i%2===1){
+   this.pen.fillText(i/2+0.5, 2.4*plat.scale+repeat, display.canvas.getAttribute('height')-plat.scale/2);}
    repeat+=plat.scale;}
 
   this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
@@ -150,12 +148,12 @@ const render = {
   this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY(), 'Vx');
   }
   if (plat.time<10*plat.timeUnit/1000){
-  this.vector(plat.positionX(), plat.positionY(), plat.positionX(), plat.positionY()+plat.grav*plat.time*0.35,'');
-  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY()+plat.grav*plat.time*0.35,'');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX(), plat.positionY()+(plat.grav*plat.scale)*plat.time*0.35,'');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY()+(plat.grav*plat.scale)*plat.time*0.35,'');
   }
   else {
-  this.vector(plat.positionX(), plat.positionY(), plat.positionX(), plat.positionY()+plat.grav*plat.time*0.35,'Vy');
-  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY()+plat.grav*plat.time*0.35,'V');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX(), plat.positionY()+(plat.grav*plat.scale)*plat.time*0.35,'Vy');
+  this.vector(plat.positionX(), plat.positionY(), plat.positionX()+plat.vel*0.5, plat.positionY()+(plat.grav*plat.scale)*plat.time*0.35,'V');
   }
   this.ball();
  }
@@ -163,13 +161,13 @@ const render = {
 
 const func = {
  pix: function(num) {return '('+num+'px)';}, //turns numbers to pixel values
- showHeight: function() {display.heightDisplay.textContent=(plat.height/plat.scale).toFixed(1)+' m'},
- showSpeed: function() {display.velocityDisplay.textContent=(plat.vel/plat.scale).toFixed(1)+' m/s'},
+ showHeight: function() {display.heightDisplay.textContent=(plat.height/(2*plat.scale)).toFixed(1)+' m'},
+ showSpeed: function() {display.velocityDisplay.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+' m/s'},
  updateStats: function() {
-  display.statX.textContent=(plat.positionX()/plat.scale).toFixed(1)+'m'
-  display.statY.textContent=(plat.positionY()/plat.scale).toFixed(1)+'m'
-  display.statVX.textContent=(plat.vel/plat.scale).toFixed(1)+'m/s'
-  display.statVY.textContent=(plat.velY()/plat.scale).toFixed(1)+'m/s'
+  display.statX.textContent=((plat.positionX()-1.5*plat.scale)/(2*plat.scale)).toFixed(1)+'m'
+  display.statY.textContent=(-1*((plat.positionY()-plat.fromTop+1.5*plat.scale))/(2*plat.scale)).toFixed(1)+'m'
+  display.statVX.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+'m/s'
+  display.statVY.textContent=(plat.velY()/(2*plat.scale)).toFixed(1)+'m/s'
  },
 }
 
@@ -179,12 +177,14 @@ func.showSpeed();
 display.velocitySlider.oninput =() => {
  plat.vel = display.velocitySlider.value;
  func.showSpeed();
+ func.updateStats();
  plat.sim = false;
  plat.time =0;
 }
 display.heightSlider.oninput =() => {
  plat.height = ((plat.fromTop-2*plat.scale)/100)*display.heightSlider.value;
  func.showHeight();
+ func.updateStats();
  plat.sim = false;
  plat.time =0;
 }
@@ -204,10 +204,13 @@ const gameClock = setInterval (
 display.mainbox.addEventListener ('click', (event)=>{
  //play
  if (event.target===display.playButton){
-  plat.sim = true;
+  if (plat.sim === false) {
+   plat.sim = true;
+  } else {
+    plat.sim = false;
+  }
  }
  
- //pause 
  else if (event.target === display.slowButton) {
   plat.timeUnit = 10;
   plat.sim = true;
@@ -223,11 +226,6 @@ display.mainbox.addEventListener ('click', (event)=>{
   plat.sim = false;
   func.updateStats();
   plat.time += 0.10;
- }
-
- //pause 
- else if (event.target === display.pauseButton) {
-  plat.sim = false;
  }
 
  //stop

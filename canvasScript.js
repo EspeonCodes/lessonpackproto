@@ -1,4 +1,6 @@
 const display = {
+ root: document.documentElement,
+ 
  canvas:document.querySelector('.render'),
  gamebox:document.querySelector('.gamebox'),
  mainbox: document.querySelector('main'),
@@ -26,6 +28,7 @@ const display = {
  stepButton: document.querySelector('.forward'),
  pauseButton: document.querySelector('.pause'),
  stopButton: document.querySelector('.stop'),
+ customizeButton: document.querySelector('.customize'),
 
  heightPlus: document.querySelector('.increaseHeight'),
  heightMinus: document.querySelector('.reduceHeight'),
@@ -35,7 +38,7 @@ const display = {
 
 const plat = {
  sim: false, //Is the simulation active or not?
- scale: 30, //scale*2 pixels = 1 meter, used to convert pixels to meters.
+ scale: 25, //scale*2 pixels = 1 meter, used to convert pixels to meters.
  vel: 0, //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 20, //the base unit of time for the simulation, [milliseconds]
@@ -81,10 +84,10 @@ const render = {
  },
  
  frame: function () {
-  this.pen.strokeStyle = 'rgb(47 79 79 / 50%)';
+  this.pen.strokeStyle = func.gridColor;
   this.pen.lineWidth =1
   this.pen.strokeRect(1.5*plat.scale,0.5*plat.scale,plat.canvasX()-2*plat.scale,plat.canvasY()-2*plat.scale);
-  this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
+  this.pen.strokeStyle = func.gridColor;
  },
 
  line: function (startX, startY, endX, endY) {
@@ -96,13 +99,13 @@ const render = {
 
  grid: function () {
   let repeat = 0;
-  this.pen.strokeStyle = 'rgb(47 79 79 / 50%)';
-  this.pen.fillStyle = 'rgb(47 79 79 / 50%)';
+  this.pen.strokeStyle = func.gridColor;
+  this.pen.fillStyle = func.gridColor;
   let stepsX = Math.floor((plat.canvasX()-2*plat.scale)/plat.scale);
   let stepsY = Math.floor((plat.canvasY()-2*plat.scale)/plat.scale);
   this.pen.font = plat.scale/2+'px monospace'
 
-  this.pen.fillText(0, plat.scale/1.5, plat.canvasY()-plat.scale);
+  this.pen.fillText(0, plat.scale/1.35, plat.canvasY()-0.55*plat.scale);
   for (let i=0; i<stepsY; i++) {
    this.line(1.5*plat.scale, plat.canvasY()-(i+2.5)*plat.scale, plat.canvasX()-0.5*plat.scale, plat.canvasY()-(i+2.5)*plat.scale);
    if (i%2===1){   
@@ -110,19 +113,16 @@ const render = {
    repeat+=plat.scale}
   
   repeat = 0;
-  this.pen.fillText(0, 1.5*plat.scale+repeat, plat.canvasX()-plat.scale/2);
   for (let i=0; i<stepsX; i++) {
    this.line(2.5*plat.scale+repeat, 0.5*plat.scale, 2.5*plat.scale+repeat, plat.canvasY()-1.5*plat.scale);
    if (i%2===1){
    this.pen.fillText(i/2+0.5, 2.4*plat.scale+repeat, plat.canvasY()-plat.scale/2);}
    repeat+=plat.scale;}
-
-  this.pen.strokeStyle = 'rgb(47 79 79 / 100%)';
  },
 
  vector: function(startX, startY, endX, endY, label) {
-  this.pen.strokeStyle = 'red';
-  this.pen.fillStyle = 'red';
+  this.pen.strokeStyle = func.highlightColor;
+  this.pen.fillStyle = func.highlightColor;
   this.pen.lineWidth = plat.scale/15;
   this.line(startX, startY, endX, endY)
   this.pen.beginPath();
@@ -133,25 +133,23 @@ const render = {
   this.pen.font = plat.scale/1.5+'px monospace'
   this.pen.strokeText(label, endX+plat.scale/1.5, endY+plat.scale/1.5);
   this.pen.fillText(label, endX+plat.scale/1.5, endY+plat.scale/1.5);
-  this.pen.strokeStyle = 'slategray';
-  this.pen.fillStyle = 'slategray';
+  this.pen.strokeStyle = func.gridColor;
+  this.pen.fillStyle = func.gridColor;
  },
 
  ball: function () {
-  this.pen.strokeStyle = 'whitesmoke';
-  this.pen.fillStyle = 'red';
+  this.pen.strokeStyle = func.highlightColor;
+  this.pen.fillStyle = func.highlightColor;
   this.pen.lineWidth = plat.scale/10;
   this.pen.beginPath();
   this.pen.arc(plat.positionX(), plat.positionY(), plat.scale/1.75, 0, 2*Math.PI);
   this.pen.fill();
   this.pen.stroke();
-  this.pen.strokeStyle = 'slategray';
-  this.pen.fillStyle = 'slategray';
   this.pen.lineWidth = 1; 
  },
 
  singleFrame: function () {
-  this.prime('slategray', 1);
+  this.prime(func.gridColor, 1);
   this.frame();
   this.grid();
   if (plat.vel>10){
@@ -180,6 +178,8 @@ const func = {
   display.statVY.textContent=(plat.velY()/(2*plat.scale)).toFixed(1)+'m/s'
  },
  inputtingTo: 1,
+ gridColor: 'darkslategray',
+ highlightColor: 'firebrick',
 }
 
 func.showHeight();
@@ -288,5 +288,39 @@ display.mainbox.addEventListener ('click', (event)=>{
   display.popup.classList.toggle('hidden');
   display.shader.classList.toggle('hidden'); 
  }
-}
-)
+
+ else if (event.target === display.customizeButton) {
+  display.root.classList.toggle('light');
+  if (display.root.classList.contains('light')){
+   func.gridColor = 'slategray';
+   func.highlightColor = 'red';
+  } else {
+   func.gridColor = 'darkslategray';
+   func.highlightColor = 'firebrick';
+  }
+ }
+
+ else if (event.target === display.canvas) {
+  if (event.shiftKey === true)  {
+   plat.vel = 0;
+   func.showSpeed();
+   func.showHeight();
+  } else if (event.offsetX>1.5*plat.scale){
+   plat.vel = (1*event.offsetX-1.5*plat.scale);
+   func.updateStats();
+   func.showSpeed();
+  }
+ }
+})
+
+display.mainbox.addEventListener ('wheel', (event)=>{
+ if (event.target === display.canvas) {
+  event.deltaMode=0;
+ if ((plat.height+event.deltaY/10)<(plat.canvasY()-2*plat.scale) && (plat.height+event.deltaY/10)>(-0.5*plat.scale)) {
+   plat.height += event.deltaY/10;
+   func.showHeight();
+   func.updateStats();
+  }
+ }
+
+})

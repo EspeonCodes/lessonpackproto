@@ -6,15 +6,20 @@
  <title>Horizontal Projectile Motion Prototype</title>
  <link rel="stylesheet" href="./canvas.css">
 </head>
+
 <body>
+
  <div class="shader hidden"></div>
+
  <header class="supertitle">Horizontal Projectile Motion: Working Prototype</header>
+ 
  <main>
+
   <div class="box popup hidden">
    <span> PLEASE ENTER <span class="request">VALUE</span> </span>
    <input class="popinput" type="number" min="0" max="100" value="0">
    <span> min: <span class="popmin"> </span>  max: <span class="popmax"></span></span></span>
-   <div class="buttonAligner"> <button class="submit"> SUBMIT</button> </div>
+   <div class="buttonAligner"> <button class="control submit"> SUBMIT</button> </div>
   </div>
 
   <div class="mainbox">
@@ -29,6 +34,7 @@
   </div>
   
   <div class="box sidebar">
+  <div class="sideTop">
 
    <div class="controls">
      <button class="control play">PLAY</button>
@@ -70,7 +76,14 @@
      </div>
     </div>
    </div>
-  </div>
+
+   <div class="sideBot">
+   <button class="box control options">SETTINGS</button>
+   <button class="box control customize">CUSTOMIZE</button>
+   <button class="box control info">INFO</button>
+   </div>
+
+   </div>
  </main>
  <footer>by Espeon, 2026</footer>
 

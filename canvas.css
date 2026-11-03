@@ -1,14 +1,25 @@
 :root {
- background-color: slategray;
+ --bgcolor: darkslategray;
+ --bglight: darkseagreen;
+ --accents: lightcyan;
+ --highlight: firebrick;
+ background-color: var(--bgcolor);
  font-family: monospace;
  font-size: 10px;
+ transition: background-color 0.2s;
+}
+:root.light {
+ --bgcolor: slategray;
+ --bglight: lightslategray;
+ --accents: whitesmoke;
+ --highlight: red;
 }
 
 .shader {
  position: absolute;
  width: 100%;
  height: 100%;
- background-color:slategray;
+ background-color: var(--bgcolor);
  opacity: 50%;
 }
 
@@ -19,13 +30,13 @@ body {
  height: 95vh;
 }
 header, footer {
- background-color:whitesmoke;
+ background-color: var(--accents);
  width: 100vw;
  height:20px;
  font-size: 1.5rem;
  display: flex;
  justify-content: center;
- color: darkslategray;
+ color: var(--bgcolor);
 }
 main {
  flex: 1;
@@ -34,17 +45,17 @@ main {
  gap: 20px;
 }
 .box {
- background-color: lightslategray;
- border: solid whitesmoke 3px;
+ background-color: var(--bglight);
+ border: solid var(--accents) 3px;
 }
 
 .popup {
  box-sizing: border-box;
  position: absolute;
- top:35%;
- left:35%;
- width: 30%;
- height: 20%;
+ top:30%;
+ left:32.5%;
+ width: 35%;
+ height: 30%;
  display: flex;
  flex-direction: column;
  justify-content: center;
@@ -52,29 +63,29 @@ main {
  padding: 10px;
  font-size: 1.5rem;
  font-weight: 600;
- color: whitesmoke;
+ color: var(--accents);
  gap: 20px;
 }
 .popup input {
  box-sizing: border-box;
  width: 100%;
  border: none;
- color: slategray;
- background-color: whitesmoke;
- border-bottom: solid 3px red;
+ color: var(--bgcolor);
+ background-color: var(--accents);
+ border-bottom: solid 3px var(--highlight);
  padding: 5px;
 }
 .popup button {
  font-size: 1.5rem;
  font-weight: 600;
- color: whitesmoke;
- border: solid whitesmoke 2px;
+ color: var(--accents);
+ border: solid var(--accents) 2px;
  padding: 5px;
  transition: color 0.25s, background-color 0.25s;
 }
 .popup button:hover {
- background-color: whitesmoke;
- color: slategray;
+ background-color: var(--accents);
+ color: var(--bgcolor);
 }
 .popup .buttonAligner {
  width: 100%;
@@ -93,7 +104,7 @@ main {
  gap: 10px;
 }
 .gamebox {
- background-color: whitesmoke;
+ background-color: var(--accents);
  flex: 9;
  display: flex;
  flex-direction: column;
@@ -106,7 +117,7 @@ main {
  padding: 10px;
  align-items: center;
  justify-content: flex-start;
- color: whitesmoke;
+ color: var(--accents);
  font-weight: 600;
  font-size: 1.5rem;
  gap: 10px;
@@ -118,6 +129,7 @@ main {
  display: flex;
  justify-content: center;
  align-items: center;
+ background-color: var(--bgcolor);
  height: 95%;
  width: 20%;
 }
@@ -134,28 +146,40 @@ main {
 }
 .control {
  box-sizing: border-box;
- background-color: lightslategray;
+ background-color: var(--bgcolor);
  flex: 1;
- height: 100%;
- max-width: 20%;
- color: whitesmoke;
+ height: 50px;
+ color: var(--accents);
  font-weight: 800;
  font-size: 1.5rem;
- border: solid whitesmoke 3px;
+ border: solid var(--accents) 3px;
  padding: none;
  transition: color 0.25s, background-color 0.25s;
 }
 .control:hover {
- background-color: whitesmoke;
- color: slategray;
+ background-color: var(--accents);
+ color: var(--bgcolor);
 }
 
 .sidebar {
  flex:1;
  display: flex;
  flex-direction: column;
- gap: 10px;
+ justify-content: space-between;
+ align-items: center;
  padding: 5px;
+}
+.sideTop {
+ gap: 10px;
+ display: flex;
+ flex-direction: column;
+}
+.sideBot {
+ display: flex;
+ width: 100%;
+ justify-content: space-between;
+ gap: 5px;
+ padding: 10px;
 }
 
 .sliderTitle {
@@ -167,7 +191,7 @@ main {
  align-self: center;
   -webkit-appearance: none;
   height: 15px;
-  background:whitesmoke;
+  background:var(--accents);
   outline: none;
   margin:5px 0px;
 }
@@ -176,24 +200,24 @@ main {
   appearance: none;
   width: 25px;
   height: 25px;
-  background-color: slategray;
-  box-shadow: 0px 0px 10px 5px slategray;
-  border: solid red 5px;
+  background-color: var(--bgcolor);
+  box-shadow: 0px 0px 10px 5px var(--bglight);
+  border: solid var(--highlight) 5px;
   transition: background-color 0.25s;
 }
 .slider::-webkit-slider-thumb:hover {
- background: white;
+ background: var(--accents);
 }
 .slider::-moz-range-thumb {
   width: 25px;
   height: 25px;
-  background:red;
+  background:var(--highlight);
 }
 
 .statOmatic {
  margin: 10px;
- border: solid 2px whitesmoke;
- background-color: lightslategray;
+ border: solid 2px var(--accents);
+ background-color: var(--bgcolor);
 }
 .sliderInterface {
  display: flex;
@@ -210,7 +234,7 @@ main {
  justify-content: center;
  align-items: center;
  padding: 5px;
- color: whitesmoke;
+ color: var(--accents);
  font-weight: 600;
  font-size: 1.5rem;
  min-width: 90px;
@@ -220,11 +244,7 @@ main {
  justify-content: center;
  align-items: center;
  padding: 5px;
- color: whitesmoke;
+ color: var(--accents);
  font-weight: 600;
  font-size: 1.3rem;
-}
-
-button {
- background-color: slategray;
 }

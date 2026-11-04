@@ -14,7 +14,7 @@ const display = {
  statVX: document.querySelector('.velX'),
  statVY: document.querySelector('.velY'),
 
- popInput: document.querySelector('.popinput'),
+ popInput: document.getElementById('popinput'),
  popSubmit: document.querySelector('.submit'),
  popup: document.querySelector('.popup'),
  shader: document.querySelector('.shader'),
@@ -208,6 +208,7 @@ const gameClock = setInterval (
    plat.time +=plat.timeUnit/1000;
   } else {
    render.singleFrame();
+   console.log(display.popInput.value);
   }
  }
 ,plat.timeUnit);
@@ -256,7 +257,6 @@ display.mainbox.addEventListener ('click', (event)=>{
   display.shader.classList.toggle('hidden');
   display.request.textContent = 'VELOCITY';
   display.popmin.textContent = '0m/s';
-  display.popInput.setAttribute('max', (500/(2*plat.scale)).toFixed(1));
   display.popmax.textContent = ((500/(2*plat.scale)).toFixed(1)+'m/s');
   func.inputtingTo = 'vel';
   plat.sim = false;
@@ -269,7 +269,6 @@ display.mainbox.addEventListener ('click', (event)=>{
   display.shader.classList.toggle('hidden');
   display.request.textContent = 'HEIGHT';
   display.popmin.textContent = '0m';
-  display.popInput.setAttribute('max', ((plat.canvasY()-2*plat.scale)/(2*plat.scale)).toFixed(1))
   display.popmax.textContent = ((plat.canvasY()-2*plat.scale)/(2*plat.scale)).toFixed(1)+'m';
   func.inputtingTo = 'height';
   plat.sim = false;
@@ -278,9 +277,11 @@ display.mainbox.addEventListener ('click', (event)=>{
 
  else if (event.target === display.popSubmit) {
   if (func.inputtingTo === 'height') {
-   plat.height = display.popInput.value*2*plat.scale;
+   if (display.popInput.value <= ((plat.canvasY()-2*plat.scale)/(2*plat.scale)) && display.popInput.value>=0){ 
+   plat.height = display.popInput.value*2*plat.scale;  }
   } else if (func.inputtingTo === 'vel') {
-   plat.vel = display.popInput.value*2*plat.scale;
+   if (display.popInput.value <= (500/(2*plat.scale)) && display.popInput.value >= 0) {
+   plat.vel = display.popInput.value*2*plat.scale;  }
   }
   func.showHeight();
   func.showSpeed();

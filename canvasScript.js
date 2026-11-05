@@ -168,9 +168,9 @@ const render = {
 
 const func = {
  pix: function(num) {return '('+num+'px)';}, //turns numbers to pixel values
- showHeight: function() {display.heightDisplay.textContent=(plat.height/(2*plat.scale)).toFixed(1)+' m'},
- showSpeed: function() {display.velocityDisplay.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+' m/s'},
  updateStats: function() {
+  display.heightDisplay.textContent=(plat.height/(2*plat.scale)).toFixed(1)+' m';
+  display.velocityDisplay.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+' m/s';
   display.statX.textContent=((plat.positionX()-1.5*plat.scale)/(2*plat.scale)).toFixed(1)+'m'
   display.statY.textContent=(-1*((plat.positionY()-plat.canvasY()+1.5*plat.scale))/(2*plat.scale)).toFixed(1)+'m'
   display.statVX.textContent=(plat.vel/(2*plat.scale)).toFixed(1)+'m/s'
@@ -181,14 +181,12 @@ const func = {
  highlightColor: 'firebrick',
 }
 
-func.showHeight();
-func.showSpeed();
-
 const gameClock = setInterval (
  ()=> {  
+  func.updateStats();
+
   if(plat.sim === 1){
    render.singleFrame();
-   func.updateStats();
    plat.time +=plat.timeUnit/1000;
 
    if (plat.time*plat.vel<plat.canvasX()-2.5*plat.scale) {
@@ -212,8 +210,6 @@ const gameClock = setInterval (
 display.velocitySlider.oninput =() => {
  if (plat.sim != 2) {
   plat.vel = display.velocitySlider.value;
-  func.showSpeed();
-  func.updateStats();
   plat.sim = 0;
   plat.time =0;
  }
@@ -221,8 +217,6 @@ display.velocitySlider.oninput =() => {
 display.heightSlider.oninput =() => {
  if (plat.sim != 2) {
   plat.height = ((plat.canvasY()-2*plat.scale)/100)*display.heightSlider.value;
-  func.showHeight();
-  func.updateStats();
   plat.sim = 0;
   plat.time =0;
  }
@@ -252,14 +246,12 @@ display.mainbox.addEventListener ('click', (event)=>{
  //step back
  else if (event.target === display.backButton) {
   plat.sim = 0;
-  func.updateStats();
   if(plat.time-0.10>0){plat.time -= 0.10};
  }
 
  //step front
  else if (event.target === display.stepButton) {
   plat.sim = 0;
-  func.updateStats();
   plat.time += 0.10;
  }
 
@@ -307,9 +299,6 @@ display.mainbox.addEventListener ('click', (event)=>{
    if (display.popInput.value <= (500/(2*plat.scale)) && display.popInput.value >= 0) {
    plat.vel = display.popInput.value*2*plat.scale;  }
   }
-  func.showHeight();
-  func.showSpeed();
-  func.updateStats();
   display.popup.classList.toggle('hidden');
   display.shader.classList.toggle('hidden'); 
  }
@@ -329,13 +318,12 @@ display.mainbox.addEventListener ('click', (event)=>{
   if (plat.sim !=2 ) {
    if (event.shiftKey === true)  {
    plat.vel = 0;
-   func.showSpeed();
-   func.showHeight();
   } else if (event.offsetX>1.5*plat.scale){
    plat.vel = (1*event.offsetX-1.5*plat.scale);
-   func.updateStats();
-   func.showSpeed();
   }
+  } else {
+   plat.sim = 0;
+
   }
  }
 
@@ -347,8 +335,6 @@ display.mainbox.addEventListener ('wheel', (event)=>{
   event.deltaMode=0;
  if ((plat.height+event.deltaY/10)<(plat.canvasY()-2*plat.scale) && (plat.height+event.deltaY/10)>(-0.5*plat.scale)) {
    plat.height += event.deltaY/10;
-   func.showHeight();
-   func.updateStats();
   }
  }
  }

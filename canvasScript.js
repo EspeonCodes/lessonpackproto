@@ -37,7 +37,7 @@ const display = {
 }
 
 const plat = {
- sim: false, //Is the simulation active or not?
+ sim: 0, //Is the simulation active or not?
  scale: 25, //scale*2 pixels = 1 meter, used to convert pixels to meters.
  vel: 0, //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
@@ -52,8 +52,8 @@ const plat = {
   if (this.time*this.vel<this.canvasX()-2.5*this.scale) {
    return this.time*this.vel+1.5*this.scale;
   } else {
-   this.sim = false;
-   return this.canvasY()-0.5*this.scale;
+   this.sim = 2;
+   return this.canvasX()-0.5*this.scale;
   }
  },
 
@@ -61,7 +61,6 @@ const plat = {
   if (this.canvasY()-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time<this.canvasY()-1.5*this.scale) {
    return this.canvasY()-1.5*this.scale-this.height+0.5*(this.grav*this.scale)*this.time*this.time
   } else {
-   this.sim = false;
    return this.canvasY()-1.5*this.scale;
   }
  },
@@ -185,95 +184,120 @@ const func = {
 func.showHeight();
 func.showSpeed();
 
-display.velocitySlider.oninput =() => {
- plat.vel = display.velocitySlider.value;
- func.showSpeed();
- func.updateStats();
- plat.sim = false;
- plat.time =0;
-}
-display.heightSlider.oninput =() => {
- plat.height = ((plat.canvasY()-2*plat.scale)/100)*display.heightSlider.value;
- func.showHeight();
- func.updateStats();
- plat.sim = false;
- plat.time =0;
-}
-
 const gameClock = setInterval (
  ()=> {  
-  if(plat.sim){
+  if(plat.sim === 1){
    render.singleFrame();
    func.updateStats();
    plat.time +=plat.timeUnit/1000;
+
+   if (plat.time*plat.vel<plat.canvasX()-2.5*plat.scale) {
+    plat.sim = 1;
+   } else {
+    plat.sim = 2;
+   }
+
+   if (plat.canvasY()-1.5*plat.scale-plat.height+0.5*(plat.grav*plat.scale)*plat.time*plat.time<plat.canvasY()-1.5*plat.scale) {
+    plat.sim = 1;
+   } else {
+    plat.sim = 2;
+   }
+
   } else {
    render.singleFrame();
-   console.log(display.popInput.value);
   }
  }
 ,plat.timeUnit);
 
+display.velocitySlider.oninput =() => {
+ if (plat.sim != 2) {
+  plat.vel = display.velocitySlider.value;
+  func.showSpeed();
+  func.updateStats();
+  plat.sim = 0;
+  plat.time =0;
+ }
+}
+display.heightSlider.oninput =() => {
+ if (plat.sim != 2) {
+  plat.height = ((plat.canvasY()-2*plat.scale)/100)*display.heightSlider.value;
+  func.showHeight();
+  func.updateStats();
+  plat.sim = 0;
+  plat.time =0;
+ }
+}
+
 display.mainbox.addEventListener ('click', (event)=>{
  //play n pause
  if (event.target===display.playButton){
-  if (plat.sim === false) {
-   plat.sim = true;
+  if (plat.sim === 0) {
+   plat.sim = 1;
+   plat.timeUnit = 20;
   } else {
-    plat.sim = false;
+    plat.sim = 0;
   }
  }
  
  //play slomo
  else if (event.target === display.slowButton) {
-  plat.timeUnit = 10;
-  plat.sim = true;
+  if (plat.sim === 0) {
+   plat.sim = 1;
+   plat.timeUnit = 10;
+  } else {
+    plat.sim = 0;
+  }
  }
 
  //step back
  else if (event.target === display.backButton) {
-  plat.sim = false;
+  plat.sim = 0;
   func.updateStats();
   if(plat.time-0.10>0){plat.time -= 0.10};
  }
 
  //step front
  else if (event.target === display.stepButton) {
-  plat.sim = false;
+  plat.sim = 0;
   func.updateStats();
   plat.time += 0.10;
  }
 
  //reset
  else if (event.target === display.stopButton) {
-  plat.sim = false;
+  plat.sim = 0;
   plat.time =0;
   plat.timeUnit = 20;
  }
 
  //input 
  else if (event.target === display.velocityDisplay) {
-  display.popInput.setAttribute('value', 0);
-  display.popup.classList.toggle('hidden');
-  display.shader.classList.toggle('hidden');
-  display.request.textContent = 'VELOCITY';
-  display.popmin.textContent = '0m/s';
-  display.popmax.textContent = ((500/(2*plat.scale)).toFixed(1)+'m/s');
-  func.inputtingTo = 'vel';
-  plat.sim = false;
-  plat.time =0;
+  if (plat.sim != 2) { 
+   display.popInput.setAttribute('value', 0);
+   display.popup.classList.toggle('hidden');
+   display.shader.classList.toggle('hidden');
+   display.request.textContent = 'VELOCITY';
+   display.popmin.textContent = '0m/s';
+   display.popmax.textContent = ((500/(2*plat.scale)).toFixed(1)+'m/s');
+   func.inputtingTo = 'vel';
+   plat.sim = 0;
+   plat.time =0;
+  }
  }
 
   else if (event.target === display.heightDisplay) {
-  display.popInput.setAttribute('value', 0);
-  display.popup.classList.toggle('hidden');
-  display.shader.classList.toggle('hidden');
-  display.request.textContent = 'HEIGHT';
-  display.popmin.textContent = '0m';
-  display.popmax.textContent = ((plat.canvasY()-2*plat.scale)/(2*plat.scale)).toFixed(1)+'m';
-  func.inputtingTo = 'height';
-  plat.sim = false;
-  plat.time =0;
- }
+   if (plat.sim != 2) { 
+    display.popInput.setAttribute('value', 0);
+    display.popup.classList.toggle('hidden');
+    display.shader.classList.toggle('hidden');
+    display.request.textContent = 'HEIGHT';
+    display.popmin.textContent = '0m';
+    display.popmax.textContent = ((plat.canvasY()-2*plat.scale)/(2*plat.scale)).toFixed(1)+'m';
+    func.inputtingTo = 'height';
+    plat.sim = 0;
+    plat.time =0;
+   }
+  }
 
  else if (event.target === display.popSubmit) {
   if (func.inputtingTo === 'height') {
@@ -302,7 +326,8 @@ display.mainbox.addEventListener ('click', (event)=>{
  }
 
  else if (event.target === display.canvas) {
-  if (event.shiftKey === true)  {
+  if (plat.sim !=2 ) {
+   if (event.shiftKey === true)  {
    plat.vel = 0;
    func.showSpeed();
    func.showHeight();
@@ -311,11 +336,14 @@ display.mainbox.addEventListener ('click', (event)=>{
    func.updateStats();
    func.showSpeed();
   }
+  }
  }
+
 })
 
 display.mainbox.addEventListener ('wheel', (event)=>{
  if (event.target === display.canvas) {
+ if (plat.sim != 2) {
   event.deltaMode=0;
  if ((plat.height+event.deltaY/10)<(plat.canvasY()-2*plat.scale) && (plat.height+event.deltaY/10)>(-0.5*plat.scale)) {
    plat.height += event.deltaY/10;
@@ -323,5 +351,5 @@ display.mainbox.addEventListener ('wheel', (event)=>{
    func.updateStats();
   }
  }
-
+ }
 })

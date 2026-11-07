@@ -29,11 +29,6 @@ const display = {
  stopButton: document.querySelector('.stop'),
 
  optionsButton: document.querySelector('.options'),
-
- heightPlus: document.querySelector('.increaseHeight'),
- heightMinus: document.querySelector('.reduceHeight'),
- speedPlus: document.querySelector('.increaseVelocity'),
- speedMinus: document.querySelector('.reduceVelocity'),
 }
 
 const plat = {
@@ -184,7 +179,7 @@ const func = {
 const gameClock = setInterval (
  ()=> {  
   func.updateStats();
-
+  
   if(plat.sim === 1){
    render.singleFrame();
    plat.time +=plat.timeUnit/1000;
@@ -222,36 +217,36 @@ display.heightSlider.oninput =() => {
  }
 }
 
-display.mainbox.addEventListener ('click', (event)=>{
+document.addEventListener ('click', (event)=>{
  //play n pause
  if (event.target===display.playButton){
-  if (plat.sim === 0) {
+  if (plat.sim != 1) {
    plat.sim = 1;
    plat.timeUnit = 20;
-  } else {
-    plat.sim = 0;
+  } else if (plat.sim === 1) {
+    plat.sim = 2;
   }
  }
  
  //play slomo
  else if (event.target === display.slowButton) {
-  if (plat.sim === 0) {
+  if (plat.sim != 1) {
    plat.sim = 1;
    plat.timeUnit = 10;
-  } else {
-    plat.sim = 0;
+  } else if (plat.sim === 1) {
+    plat.sim = 2;
   }
  }
 
  //step back
  else if (event.target === display.backButton) {
-  plat.sim = 0;
+  plat.sim = 2;
   if(plat.time-0.10>0){plat.time -= 0.10};
  }
 
  //step front
  else if (event.target === display.stepButton) {
-  plat.sim = 0;
+  plat.sim = 2;
   plat.time += 0.10;
  }
 
@@ -326,7 +321,7 @@ display.mainbox.addEventListener ('click', (event)=>{
 
 })
 
-display.mainbox.addEventListener ('wheel', (event)=>{
+document.addEventListener ('wheel', (event)=>{
  if (event.target === display.canvas) {
  if (plat.sim === 0) {
   event.deltaMode=0;
@@ -334,5 +329,49 @@ display.mainbox.addEventListener ('wheel', (event)=>{
    plat.height += event.deltaY/10;
   }
  }
+ }
+})
+
+document.addEventListener ('keydown', (event)=>{
+ console.log(event.key)
+ if (plat.sim === 0) { 
+ if (event.key === "ArrowUp") {
+  if ((plat.height+plat.scale)<(plat.canvasY()-1.5*plat.scale) && (plat.height+plat.scale)>(-0.5*plat.scale)) {
+   plat.height += plat.scale;
+  }
+ } else if (event.key === "ArrowDown") {
+  if ((plat.height-plat.scale)<(plat.canvasY()-1.5*plat.scale) && (plat.height-plat.scale)>(-0.5*plat.scale)) {
+   plat.height -= plat.scale;
+  }
+ } else if (event.key === "ArrowRight") {
+  if ((plat.vel+plat.scale)<=500 && (plat.vel+plat.scale)>0) {
+   plat.vel += plat.scale;
+  }
+ } else if (event.key === "ArrowLeft") {
+  if ((plat.vel-plat.scale)>=0) {
+   plat.vel -= plat.scale;
+  }
+ } }
+
+ if (event.key === "Enter" && event.shiftKey === false) {
+  if (plat.sim != 1) {
+   plat.sim = 1;
+   plat.timeUnit = 20;
+  } else if (plat.sim === 1) {
+    plat.sim = 2;
+  }
+ } else if (event.key === "Enter" && event.shiftKey === true) {
+  if (plat.sim != 1) {
+   plat.sim = 1;
+   plat.timeUnit = 10;
+  } else if (plat.sim === 1) {
+    plat.sim = 2;
+  }
+ } else if (event.key === ">" || event.key === ".") {
+  plat.sim = 2;
+  plat.time += 0.10;
+ } else if (event.key === "<" || event.key === ",") {
+  plat.sim = 2;
+  plat.time -= 0.10;
  }
 })

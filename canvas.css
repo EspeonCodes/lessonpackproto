@@ -220,9 +220,12 @@ main {
 }
 
 .statOmatic {
- margin: 10px;
+ margin: 0px;
  border: outset 5px var(--accents);
  background-color: var(--bgcolor);
+}
+.statOmatic .title {
+ text-decoration: underline;
 }
 .sliderInterface {
  display: flex;

@@ -353,20 +353,24 @@ document.addEventListener ('keydown', (event)=>{
   }
  } }
 
- if (event.key === "Enter" && event.shiftKey === false) {
+ if (event.key === "Enter" && event.shiftKey === false && event.ctrlKey === false) {
   if (plat.sim != 1) {
    plat.sim = 1;
    plat.timeUnit = 20;
   } else if (plat.sim === 1) {
     plat.sim = 2;
   }
- } else if (event.key === "Enter" && event.shiftKey === true) {
+ } else if (event.key === "Enter" && event.shiftKey === true && event.ctrlKey === false) {
   if (plat.sim != 1) {
    plat.sim = 1;
    plat.timeUnit = 10;
   } else if (plat.sim === 1) {
     plat.sim = 2;
   }
+ } else if (event.key === "Enter" && event.shiftKey === false && event.ctrlKey === true) {
+  plat.sim = 0;
+  plat.time =0;
+  plat.timeUnit = 20;
  } else if (event.key === ">" || event.key === ".") {
   plat.sim = 2;
   plat.time += 0.10;

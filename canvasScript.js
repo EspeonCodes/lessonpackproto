@@ -26,9 +26,9 @@ const display = {
  slowButton: document.querySelector('.slomo'),
  backButton: document.querySelector('.back'),
  stepButton: document.querySelector('.forward'),
- pauseButton: document.querySelector('.pause'),
  stopButton: document.querySelector('.stop'),
- customizeButton: document.querySelector('.customize'),
+
+ optionsButton: document.querySelector('.options'),
 
  heightPlus: document.querySelector('.increaseHeight'),
  heightMinus: document.querySelector('.reduceHeight'),
@@ -265,7 +265,7 @@ display.mainbox.addEventListener ('click', (event)=>{
  //input 
  else if (event.target === display.velocityDisplay) {
   if (plat.sim != 2) { 
-   display.popInput.setAttribute('value', 0);
+   display.popInput.value = 0;
    display.popup.classList.toggle('hidden');
    display.shader.classList.toggle('hidden');
    display.request.textContent = 'VELOCITY';
@@ -279,7 +279,7 @@ display.mainbox.addEventListener ('click', (event)=>{
 
   else if (event.target === display.heightDisplay) {
    if (plat.sim != 2) { 
-    display.popInput.setAttribute('value', 0);
+    display.popInput.value = 0;
     display.popup.classList.toggle('hidden');
     display.shader.classList.toggle('hidden');
     display.request.textContent = 'HEIGHT';
@@ -303,7 +303,7 @@ display.mainbox.addEventListener ('click', (event)=>{
   display.shader.classList.toggle('hidden'); 
  }
 
- else if (event.target === display.customizeButton) {
+ else if (event.target === display.optionsButton) {
   display.root.classList.toggle('light');
   if (display.root.classList.contains('light')){
    func.gridColor = 'slategray';
@@ -315,15 +315,12 @@ display.mainbox.addEventListener ('click', (event)=>{
  }
 
  else if (event.target === display.canvas) {
-  if (plat.sim !=2 ) {
+  if (plat.sim === 0) {
    if (event.shiftKey === true)  {
    plat.vel = 0;
   } else if (event.offsetX>1.5*plat.scale){
    plat.vel = (1*event.offsetX-1.5*plat.scale);
   }
-  } else {
-   plat.sim = 0;
-
   }
  }
 
@@ -331,7 +328,7 @@ display.mainbox.addEventListener ('click', (event)=>{
 
 display.mainbox.addEventListener ('wheel', (event)=>{
  if (event.target === display.canvas) {
- if (plat.sim != 2) {
+ if (plat.sim === 0) {
   event.deltaMode=0;
  if ((plat.height+event.deltaY/10)<(plat.canvasY()-2*plat.scale) && (plat.height+event.deltaY/10)>(-0.5*plat.scale)) {
    plat.height += event.deltaY/10;

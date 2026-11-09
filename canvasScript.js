@@ -29,11 +29,19 @@ const display = {
  stopButton: document.querySelector('.stop'),
 
  optionsButton: document.querySelector('.options'),
+ settingsMenu: document.querySelector('.settingsMenu'),
+ scaleB: document.getElementById('conScale'),
+ themeB: document.getElementById('conTheme'),
+ fontSB: document.getElementById('conFont'),
+ fontCB: document.getElementById('conFontCon'),
+ tipsB: document.getElementById('conTips'),
+ announceB: document.getElementById('conAnnounce'),
+ submitSettings: document.getElementById('settingSubmit'),
 }
 
 const plat = {
  sim: 0, //Is the simulation active or not?
- scale: 25, //scale*2 pixels = 1 meter, used to convert pixels to meters.
+ scale: 30, //scale*2 pixels = 1 meter, used to convert pixels to meters.
  vel: 0, //how fast will the object move horizontally? [pixels/second]
  time: 0, //how long has it been since the simulation started? [seconds]
  timeUnit: 20, //the base unit of time for the simulation, [milliseconds]
@@ -132,9 +140,12 @@ const render = {
  },
 
  ball: function () {
+  const grad = this.pen.createRadialGradient(plat.positionX()+plat.scale/4, plat.positionY()-plat.scale/4, plat.scale/3, plat.positionX()+plat.scale/4, plat.positionY()-plat.scale/4, plat.scale);
+  grad.addColorStop(0, func.highlightColor);
+  grad.addColorStop(1, func.gridColor);
   this.pen.strokeStyle = func.highlightColor;
-  this.pen.fillStyle = func.highlightColor;
-  this.pen.lineWidth = plat.scale/10;
+  this.pen.fillStyle = grad;
+  this.pen.lineWidth = plat.scale/15;
   this.pen.beginPath();
   this.pen.arc(plat.positionX(), plat.positionY(), plat.scale/1.75, 0, 2*Math.PI);
   this.pen.fill();
@@ -143,7 +154,6 @@ const render = {
  },
 
  singleFrame: function () {
-  this.prime(func.gridColor, 1);
   this.frame();
   this.grid();
   if (plat.vel>10){
@@ -174,11 +184,16 @@ const func = {
  inputtingTo: 1,
  gridColor: 'darkslategray',
  highlightColor: 'firebrick',
+ bright: 'white',
+ scalePick: 0,
+ fontSize: 0,
 }
 
 const gameClock = setInterval (
  ()=> {  
+  render.prime(func.gridColor, 1);
   func.updateStats();
+  console.log(plat.sim);
   
   if(plat.sim === 1){
    render.singleFrame();
@@ -299,14 +314,73 @@ document.addEventListener ('click', (event)=>{
  }
 
  else if (event.target === display.optionsButton) {
+  display.settingsMenu.classList.toggle('hidden');
+  display.shader.classList.toggle('hidden');
+ }
+
+ else if (event.target === display.themeB) {
   display.root.classList.toggle('light');
   if (display.root.classList.contains('light')){
    func.gridColor = 'slategray';
    func.highlightColor = 'red';
+   display.themeB.textContent = "LIGHT"
   } else {
    func.gridColor = 'darkslategray';
    func.highlightColor = 'firebrick';
+   display.themeB.textContent = "DARK"
   }
+ }
+
+ else if (event.target === display.fontSB) {
+  switch (func.fontSize) {
+   case 0:
+    if(display.root.classList.contains("large")){display.root.classList.toggle('large')}
+    display.root.classList.toggle('medium');
+    func.fontSize =1;
+    display.fontSB.textContent = 'MEDIUM';
+   break;
+    
+   case 1:
+    if(display.root.classList.contains("medium")){display.root.classList.toggle('medium')}
+    display.root.classList.toggle('large');
+    func.fontSize =2;
+    display.fontSB.textContent = 'LARGE';
+   break;
+
+   case 2:
+    if(display.root.classList.contains("medium")){display.root.classList.toggle('medium')}
+    if(display.root.classList.contains("large")){display.root.classList.toggle('large')}
+    func.fontSize =0;
+    display.fontSB.textContent = 'SMALL';
+   break;
+  }
+ }
+
+ else if (event.target === display.scaleB) {
+  switch (func.scalePick) {
+   case 0:
+    plat.scale = 45;
+    func.scalePick =1;
+    display.scaleB.textContent = 'MEDIUM';
+   break;
+    
+   case 1:
+    plat.scale = 60;
+    func.scalePick =2;
+    display.scaleB.textContent = 'LARGE';
+   break;
+
+   case 2:
+    plat.scale = 30;
+    func.scalePick =0;
+    display.scaleB.textContent = 'SMALL';
+   break;
+  }
+ }
+
+ else if (event.target === display.submitSettings) {
+  display.settingsMenu.classList.toggle('hidden');
+  display.shader.classList.toggle('hidden');
  }
 
  else if (event.target === display.canvas) {
